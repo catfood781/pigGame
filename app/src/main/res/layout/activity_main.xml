@@ -7,12 +7,190 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/player2TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Player 2"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/player2EditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/player1TextView"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/player1TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Player 1"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/player1EditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/player1EditText"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/player1ScoreTextView"
+        app:layout_constraintEnd_toStartOf="@+id/player2EditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/player1TextView" />
+
+    <TextView
+        android:id="@+id/player1ScoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Score"
+        app:layout_constraintBottom_toTopOf="@+id/player1ScoreLabel"
+        app:layout_constraintEnd_toEndOf="@+id/player1EditText"
+        app:layout_constraintStart_toStartOf="@+id/player1EditText"
+        app:layout_constraintTop_toBottomOf="@+id/player1EditText" />
+
+    <EditText
+        android:id="@+id/player2EditText"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/player2ScoreTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/player1EditText"
+        app:layout_constraintTop_toBottomOf="@+id/player2TextView" />
+
+    <TextView
+        android:id="@+id/player2ScoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Score"
+        app:layout_constraintBottom_toTopOf="@+id/player2ScoreLabel"
+        app:layout_constraintEnd_toEndOf="@+id/player2EditText"
+        app:layout_constraintStart_toStartOf="@+id/player2EditText"
+        app:layout_constraintTop_toBottomOf="@+id/player2EditText" />
+
+    <TextView
+        android:id="@+id/player1ScoreLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/player1ScoreTextView"
+        app:layout_constraintStart_toStartOf="@+id/player1ScoreTextView"
+        app:layout_constraintTop_toBottomOf="@+id/player1ScoreTextView" />
+
+    <TextView
+        android:id="@+id/player2ScoreLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/player2ScoreTextView"
+        app:layout_constraintStart_toStartOf="@+id/player2ScoreTextView"
+        app:layout_constraintTop_toBottomOf="@+id/player2ScoreTextView" />
+
+    <TextView
+        android:id="@+id/turnTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="_____'s turn"
+        app:layout_constraintEnd_toStartOf="@+id/player2ScoreTextView"
+        app:layout_constraintStart_toEndOf="@+id/player1ScoreTextView"
+        app:layout_constraintTop_toBottomOf="@+id/player2ScoreLabel" />
+
+    <ImageView
+        android:id="@+id/dieImageView"
+        android:layout_width="115dp"
+        android:layout_height="122dp"
+        android:layout_marginStart="148dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="148dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/turnTextView"
+        app:srcCompat="@drawable/die6" />
+
+    <Button
+        android:id="@+id/newGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="147dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="26dp"
+        android:text="New Game"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/rollButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="50dp"
+        android:text="Roll Die"
+        app:layout_constraintBottom_toTopOf="@+id/newGameButton"
+        app:layout_constraintEnd_toStartOf="@+id/endTurnButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointScoreTextView" />
+
+    <Button
+        android:id="@+id/endTurnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="50dp"
+        android:text="End Turn"
+        app:layout_constraintBottom_toTopOf="@+id/newGameButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/rollButton"
+        app:layout_constraintTop_toBottomOf="@+id/pointScoreTextView" />
+
+    <TextView
+        android:id="@+id/pointsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Points"
+        app:layout_constraintEnd_toEndOf="@+id/dieImageView"
+        app:layout_constraintStart_toStartOf="@+id/dieImageView"
+        app:layout_constraintTop_toBottomOf="@+id/dieImageView" />
+
+    <TextView
+        android:id="@+id/pointScoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="100"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="@+id/pointsTextView"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toStartOf="@+id/pointsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/pointsTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
