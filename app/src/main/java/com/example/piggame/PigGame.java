@@ -9,8 +9,9 @@ public class PigGame {
     public int p2Score = 0;
     public int pointTotal = 0;
     public boolean isP1Turn = true;    // else it is player 2's turn
-    public boolean isGameOver = false; // game is running until isGameOver is true
-
+    public boolean isGameOver = true; // game is running until isGameOver is true
+//    public boolean p1CanPlay = true;
+//    public boolean p2CanPlay = true;
 
     public int rollRandDie() {
         // Rolling die for value between 1 and 6

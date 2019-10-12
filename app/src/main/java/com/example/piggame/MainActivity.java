@@ -97,7 +97,6 @@ implements OnClickListener, OnEditorActionListener {
         // If not 1, continue adding to accumulator
         if (dieRoll != 1) {
             game.pointTotal += dieRoll;
-
         } else {
         // Lose accumulated points for this turn and disable button
             game.pointTotal = 0;
@@ -117,6 +116,42 @@ implements OnClickListener, OnEditorActionListener {
         }
         // Resets counter for other player.
         game.pointTotal = 0;
+        checkForWinner();
+
+
+    }
+
+    public void enableAllGamePlayButtons() {
+        rollButton.setEnabled(true);
+        endTurnButton.setEnabled(true);
+    }
+
+    public void disableGamePlayButtons() {
+        rollButton.setEnabled(false);
+        endTurnButton.setEnabled(false);
+    }
+
+    public void checkForWinner() {
+        boolean winnerFound = false;
+        if (game.p1Score >= 10){
+            winnerFound = true;
+
+        } else if (game.p2Score >= 10) {
+            winnerFound = true;
+        }
+
+        if (winnerFound) {
+            if (game.p1Score > game.p2Score) {
+                Log.d(TAG, "player 1 wins!");
+            } else if (game.p2Score > game.p1Score){
+                Log.d(TAG, "player 2 wins!");
+            } else {
+                Log.d(TAG, "a tie!");
+            }
+            disableGamePlayButtons();
+            game.isGameOver = true;
+        }
+
         switchPlayerTurn();
     }
 
@@ -124,7 +159,11 @@ implements OnClickListener, OnEditorActionListener {
         game.resetGame();
         displayScores();
         displayPointTotal(0);
+        turnTextView.setText(p1TurnText);
+        enableAllGamePlayButtons();
     }
+
+
 
 
     @Override
