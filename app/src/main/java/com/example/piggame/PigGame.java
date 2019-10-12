@@ -5,9 +5,9 @@ import java.util.Random;
 
 public class PigGame {
     private Random rand = new Random();
-    private int p1Score = 0;
-    private int p2Score = 0;
-    private int addPoints = 0;
+    public int p1Score = 0;
+    public int p2Score = 0;
+    public int pointTotal = 0;
     public boolean isP1Turn = true;    // else it is player 2's turn
     public boolean isGameOver = false; // game is running until isGameOver is true
 
@@ -23,7 +23,13 @@ public class PigGame {
     public int getPlayer2Score() { return p2Score; }
 
 
-
+    public void resetGame() {
+        p1Score = 0;
+        p2Score = 0;
+        pointTotal = 0;
+        isP1Turn = true;
+        isGameOver = false;
+    }
 
 
 

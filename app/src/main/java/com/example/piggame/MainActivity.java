@@ -31,14 +31,12 @@ implements OnClickListener, OnEditorActionListener {
     private TextView player1ScoreLabel;
     private TextView player2ScoreLabel;
     private TextView pointScoreTextView;
-    private int p1Score = 0;
-    private int p2Score = 0;
-    private int pointTotal = 0;
     private String p1TurnText = "Player 1's turn";
     private String p2TurnText = "Player 2's turn";
     private ImageView dieImageView;
     private Button rollButton;
-
+    private Button endTurnButton;
+    private Button newGameButton;
 
     // The game
     PigGame game;
@@ -54,7 +52,6 @@ implements OnClickListener, OnEditorActionListener {
         player1ScoreLabel.setText(String.format(Locale.US, "%d", game.getPlayer1Score()));
         player2ScoreLabel.setText(String.format(Locale.US, "%d", game.getPlayer2Score()));
     }
-
 
     public void displayDie(int dieValue) {
         int id = 0;
@@ -79,10 +76,10 @@ implements OnClickListener, OnEditorActionListener {
                 break;
         }
         dieImageView.setImageResource(id);
-        // Disables the roll button if a 1 is hit.
-        if (dieValue == 1) {
-            rollButton.setEnabled(false);
-        }
+    }
+
+    public void displayPointTotal(int total) {
+        pointScoreTextView.setText(String.valueOf(total));
     }
 
     public void switchPlayerTurn() {
@@ -92,6 +89,42 @@ implements OnClickListener, OnEditorActionListener {
         rollButton.setEnabled(true);
     }
 
+    public void playerRoll() {
+        // Random roll
+        int dieRoll = game.rollRandDie();
+        // Show die value
+        displayDie(dieRoll);
+        // If not 1, continue adding to accumulator
+        if (dieRoll != 1) {
+            game.pointTotal += dieRoll;
+
+        } else {
+        // Lose accumulated points for this turn and disable button
+            game.pointTotal = 0;
+            rollButton.setEnabled(false);
+        }
+        displayPointTotal(game.pointTotal);
+    }
+
+    public void endPlayerTurn() {
+        // Check to see if there are points to add for p1 or p2
+        if (game.pointTotal != 0 && game.isP1Turn) {
+            game.p1Score += game.pointTotal;
+            player1ScoreLabel.setText(String.valueOf(game.p1Score));
+        } else if (game.pointTotal != 0 && !game.isP1Turn) {
+            game.p2Score += game.pointTotal;
+            player2ScoreLabel.setText((String.valueOf(game.p2Score)));
+        }
+        // Resets counter for other player.
+        game.pointTotal = 0;
+        switchPlayerTurn();
+    }
+
+    public void startNewGame() {
+        game.resetGame();
+        displayScores();
+        displayPointTotal(0);
+    }
 
 
     @Override
@@ -106,23 +139,27 @@ implements OnClickListener, OnEditorActionListener {
         pointScoreTextView = (TextView)findViewById(R.id.pointScoreTextView);
         dieImageView = (ImageView)findViewById(R.id.dieImageView);
         rollButton = (Button)findViewById(R.id.rollButton);
+        endTurnButton = (Button)findViewById(R.id.endTurnButton);
+        newGameButton = (Button)findViewById(R.id.newGameButton);
 
         game = new PigGame();
         turnTextView.setText(p1TurnText);
-
+        rollButton.setFocusable(false);
+        endTurnButton.setFocusable(false);
+        newGameButton.setFocusable(false);
 
         displayScores();
 
     }
 
+
     @Override
     public boolean onEditorAction(TextView v, int actionID, KeyEvent event) {
-
-        if (actionID == EditorInfo.IME_ACTION_DONE ||
-                actionID == EditorInfo.IME_ACTION_UNSPECIFIED) {
-            Log.d(TAG, "Editor Action actionID: " + actionID);
-        }
+        // Closes the soft keyboard
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         return false;
+
     }
 
 
@@ -133,20 +170,29 @@ implements OnClickListener, OnEditorActionListener {
                 // Roll the die
                 Log.d(TAG, "roll button pressed");
 
-                displayDie(game.rollRandDie());
+                playerRoll();
                 break;
 
             case R.id.endTurnButton:
                 // end the turn and switch to the other player
                 Log.d(TAG, "endTurn button pressed");
-                switchPlayerTurn();
+
+                endPlayerTurn();
                 break;
 
             case R.id.newGameButton:
                 // start a new game
                 Log.d(TAG, "newGame button pressed");
 
+                startNewGame();
                 break;
         }
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putInt()
+//    }
+
+
 }
