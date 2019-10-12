@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">PigGame</string>
+    <string name="player1TextView">Player 1</string>
+    <string name="player1ScoreTextView">Score</string>
+    <string name="player1ScoreLabel">0</string>
+    <string name="player2ScoreLabel">0</string>
+    <string name="turnTextView">Player\'s turn</string>
+    <string name="player2TextView">Player 2</string>
+    <string name="dieImage">dieImage</string>
+    <string name="pointsTextView">Points</string>
+    <string name="pointScoreTextView">100</string>
+    <string name="rollButton">Roll Die</string>
+    <string name="endTurnButton">End Turn</string>
+    <string name="newGameButton">New Game</string>
 </resources>
