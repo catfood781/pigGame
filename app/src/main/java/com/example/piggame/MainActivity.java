@@ -204,11 +204,24 @@ implements OnClickListener, OnEditorActionListener {
         p1WinTextEdit.setVisibility(View.INVISIBLE);
         p2WinTextEdit.setVisibility(View.INVISIBLE);
 
+
+
+//        if (savedInstanceState != null) {
+//            game.p1Score = savedInstanceState.getInt("p1Score", 0);
+//            game.p2Score = savedInstanceState.getInt("p2Score", 0);
+//            player1EditText.setText(savedInstanceState.getString(p1Name, ""));
+//            player2EditText.setText(savedInstanceState.getString(p2Name, ""));
+//        }
         displayScores();
-
-        savedValues = getSharedPreferences("SavedValues", MODE_PRIVATE);
-
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putInt("p1Score", 0);
+//        outState.putInt("p2Score", 0);
+//        outState.putString("p1Name", player1EditText.getText().toString());
+//        outState.putString("p2Name", player2EditText.getText().toString());
+//    }
 
 
     @Override
@@ -228,9 +241,7 @@ implements OnClickListener, OnEditorActionListener {
                 // Roll the die
                 Log.d(TAG, "roll button pressed");
 
-                if ((game.isP1Turn && game.p1CanPlay) ||(!game.isP1Turn && game.p2CanPlay)) {
-                    playerRoll();
-                }
+                playerRoll();
 
                 break;
 
