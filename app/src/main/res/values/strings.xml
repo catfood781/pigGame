@@ -14,6 +14,4 @@
     <string name="newGameButton">New Game</string>
     <string name="p1WinTextEdit">Player 1 Wins!</string>
     <string name="p2WinTextEdit">Player 2 Wins!</string>
-    <string name="player1Name"></string>
-    <string name="player2Name"></string>
 </resources>

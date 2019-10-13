@@ -41,6 +41,8 @@ implements OnClickListener, OnEditorActionListener {
     private Button endTurnButton;
     private Button newGameButton;
     private static int GOAL = 100;
+    private String p1Name;
+    private String p2Name;
 
     // The game
     PigGame game;
@@ -247,7 +249,26 @@ implements OnClickListener, OnEditorActionListener {
         }
     }
 
-
+//    @Override
+//    public void onPause() {
+//        Editor editor = savedValues.edit();
+//        editor.putString("p1Name", player1EditText.getText().toString());
+//        editor.putString("p2Name", player2EditText.getText().toString());
+//        editor.putInt("p1Score", game.p1Score);
+//        editor.putInt("p2Score", game.p2Score);
+//        editor.apply();
+//        super.onPause();
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        player1EditText.setText(savedValues.getString("p1Name", ""));
+//        player2EditText.setText(savedValues.getString("p2Name", ""));
+//        player1ScoreLabel.setText(savedValues.getInt("p1Score", 0));
+//        player2ScoreLabel.setText(savedValues.getInt("p2Score", 0));
+//        displayScores();
+//    }
 
 
 }
