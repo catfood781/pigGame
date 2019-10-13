@@ -50,7 +50,8 @@
         app:layout_constraintBottom_toTopOf="@+id/player1ScoreTextView"
         app:layout_constraintEnd_toStartOf="@+id/player2EditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player1TextView" />
+        app:layout_constraintTop_toBottomOf="@+id/player1TextView"
+        tools:text="@string/player1Name" />
 
     <TextView
         android:id="@+id/player1ScoreTextView"
@@ -80,7 +81,8 @@
         app:layout_constraintBottom_toTopOf="@+id/player2ScoreTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/player1EditText"
-        app:layout_constraintTop_toBottomOf="@+id/player2TextView" />
+        app:layout_constraintTop_toBottomOf="@+id/player2TextView"
+        tools:text="@string/player2Name" />
 
     <TextView
         android:id="@+id/player2ScoreTextView"

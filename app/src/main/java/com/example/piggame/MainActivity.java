@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.EditorInfo;
+//import android.view.inputmethod.EditorInfo;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,10 +35,12 @@ implements OnClickListener, OnEditorActionListener {
     private TextView p2WinTextEdit;
     private String p1TurnText = "Player 1's turn";
     private String p2TurnText = "Player 2's turn";
+    private String turnText = "'s turn";
     private ImageView dieImageView;
     private Button rollButton;
     private Button endTurnButton;
     private Button newGameButton;
+    private static int GOAL = 100;
 
     // The game
     PigGame game;
@@ -128,10 +130,10 @@ implements OnClickListener, OnEditorActionListener {
 
     public void checkForWinner() {
         boolean winnerFound = false;
-        if (game.p1Score >= 10){
+        if (game.p1Score >= GOAL){
             game.p1CanPlay = false;
             winnerFound = true;
-        } else if (game.p2Score >= 10) {
+        } else if (game.p2Score >= GOAL) {
             game.p2CanPlay = false;
             winnerFound = true;
         }
@@ -202,6 +204,8 @@ implements OnClickListener, OnEditorActionListener {
 
         displayScores();
 
+        savedValues = getSharedPreferences("SavedValues", MODE_PRIVATE);
+
     }
 
 
@@ -243,10 +247,7 @@ implements OnClickListener, OnEditorActionListener {
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        outState.putInt()
-//    }
+
 
 
 }
