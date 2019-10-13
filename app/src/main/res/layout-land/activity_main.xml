@@ -179,4 +179,31 @@
         app:layout_constraintStart_toStartOf="@+id/pointsTextView"
         app:layout_constraintTop_toBottomOf="@+id/pointsTextView" />
 
+    <TextView
+        android:id="@+id/p1WinTextEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="@string/p1WinTextEdit"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/newGameButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointScoreTextView" />
+
+    <TextView
+        android:id="@+id/p2WinTextEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/p2WinTextEdit"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/newGameButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pointScoreTextView"
+        app:layout_constraintVertical_bias="0.476" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

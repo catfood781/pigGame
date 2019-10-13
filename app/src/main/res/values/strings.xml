@@ -12,4 +12,6 @@
     <string name="rollButton">Roll Die</string>
     <string name="endTurnButton">End Turn</string>
     <string name="newGameButton">New Game</string>
+    <string name="p1WinTextEdit">Player 1 Wins!</string>
+    <string name="p2WinTextEdit">Player 2 Wins!</string>
 </resources>

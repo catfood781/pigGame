@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#BEF7FF"
     tools:context=".MainActivity">
 
     <TextView
@@ -14,6 +15,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/player2TextView"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/player2EditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -28,6 +30,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/player1TextView"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/player1EditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,13 +44,13 @@
         android:layout_marginEnd="33dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:labelFor="@id/player1EditText"
         app:layout_constraintBottom_toTopOf="@+id/player1ScoreTextView"
         app:layout_constraintEnd_toStartOf="@+id/player2EditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/player1TextView"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/player1TextView" />
 
     <TextView
         android:id="@+id/player1ScoreTextView"
@@ -56,6 +59,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/player1ScoreTextView"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/player1ScoreLabel"
         app:layout_constraintEnd_toEndOf="@+id/player1EditText"
         app:layout_constraintStart_toStartOf="@+id/player1EditText"
@@ -70,13 +74,13 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:labelFor="@id/player2EditText"
         app:layout_constraintBottom_toTopOf="@+id/player2ScoreTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/player1EditText"
-        app:layout_constraintTop_toBottomOf="@+id/player2TextView"
-        android:importantForAutofill="no" />
+        app:layout_constraintTop_toBottomOf="@+id/player2TextView" />
 
     <TextView
         android:id="@+id/player2ScoreTextView"
@@ -85,6 +89,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/player1ScoreTextView"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/player2ScoreLabel"
         app:layout_constraintEnd_toEndOf="@+id/player2EditText"
         app:layout_constraintStart_toStartOf="@+id/player2EditText"
@@ -97,6 +102,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/player1ScoreLabel"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/player1ScoreTextView"
         app:layout_constraintStart_toStartOf="@+id/player1ScoreTextView"
         app:layout_constraintTop_toBottomOf="@+id/player1ScoreTextView" />
@@ -108,6 +114,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/player2ScoreLabel"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/player2ScoreTextView"
         app:layout_constraintStart_toStartOf="@+id/player2ScoreTextView"
         app:layout_constraintTop_toBottomOf="@+id/player2ScoreTextView" />
@@ -117,6 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/turnTextView"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/player2ScoreTextView"
         app:layout_constraintStart_toEndOf="@+id/player1ScoreTextView"
         app:layout_constraintTop_toBottomOf="@+id/player2ScoreLabel" />
@@ -128,12 +136,12 @@
         android:layout_marginStart="148dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="148dp"
+        android:contentDescription="@string/dieImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/turnTextView"
-        app:srcCompat="@drawable/die6"
-        android:contentDescription="@string/dieImage" />
+        app:srcCompat="@drawable/die6" />
 
     <Button
         android:id="@+id/newGameButton"
@@ -185,6 +193,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/pointsTextView"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/dieImageView"
         app:layout_constraintStart_toStartOf="@+id/dieImageView"
         app:layout_constraintTop_toBottomOf="@+id/dieImageView" />
@@ -196,9 +205,36 @@
         android:layout_marginTop="8dp"
         android:text="@string/pointScoreTextView"
         android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/pointsTextView"
         app:layout_constraintHorizontal_bias="0.55"
         app:layout_constraintStart_toStartOf="@+id/pointsTextView"
         app:layout_constraintTop_toBottomOf="@+id/pointsTextView" />
+
+    <TextView
+        android:id="@+id/p1WinTextEdit"
+        android:layout_width="113dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/p1WinTextEdit"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/dieImageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/player1ScoreLabel" />
+
+    <TextView
+        android:id="@+id/p2WinTextEdit"
+        android:layout_width="116dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/p2WinTextEdit"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dieImageView"
+        app:layout_constraintTop_toBottomOf="@+id/player2ScoreLabel" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,6 +31,8 @@ implements OnClickListener, OnEditorActionListener {
     private TextView player1ScoreLabel;
     private TextView player2ScoreLabel;
     private TextView pointScoreTextView;
+    private TextView p1WinTextEdit; // Called it TextEdit instead of TextView :(
+    private TextView p2WinTextEdit;
     private String p1TurnText = "Player 1's turn";
     private String p2TurnText = "Player 2's turn";
     private ImageView dieImageView;
@@ -110,15 +112,45 @@ implements OnClickListener, OnEditorActionListener {
         if (game.pointTotal != 0 && game.isP1Turn) {
             game.p1Score += game.pointTotal;
             player1ScoreLabel.setText(String.valueOf(game.p1Score));
+            game.p1CanPlay = false;
+            game.p2CanPlay = true;
         } else if (game.pointTotal != 0 && !game.isP1Turn) {
             game.p2Score += game.pointTotal;
             player2ScoreLabel.setText((String.valueOf(game.p2Score)));
+            game.p1CanPlay = true;
+            game.p2CanPlay = false;
         }
         // Resets counter for other player.
         game.pointTotal = 0;
         checkForWinner();
 
+    }
 
+    public void checkForWinner() {
+        boolean winnerFound = false;
+        if (game.p1Score >= 10){
+            game.p1CanPlay = false;
+            winnerFound = true;
+        } else if (game.p2Score >= 10) {
+            game.p2CanPlay = false;
+            winnerFound = true;
+        }
+
+        if (winnerFound && (!game.p1CanPlay || !game.p2CanPlay)) {
+            if (game.p1Score > game.p2Score) {
+                Log.d(TAG, "player 1 wins!");
+                p1WinTextEdit.setVisibility(View.VISIBLE);
+            } else if (game.p2Score > game.p1Score){
+                Log.d(TAG, "player 2 wins!");
+                p2WinTextEdit.setVisibility(View.VISIBLE);
+            } else {
+                Log.d(TAG, "a tie!");
+            }
+            disableGamePlayButtons();
+
+        }
+
+        switchPlayerTurn();
     }
 
     public void enableAllGamePlayButtons() {
@@ -131,39 +163,15 @@ implements OnClickListener, OnEditorActionListener {
         endTurnButton.setEnabled(false);
     }
 
-    public void checkForWinner() {
-        boolean winnerFound = false;
-        if (game.p1Score >= 10){
-            winnerFound = true;
-
-        } else if (game.p2Score >= 10) {
-            winnerFound = true;
-        }
-
-        if (winnerFound) {
-            if (game.p1Score > game.p2Score) {
-                Log.d(TAG, "player 1 wins!");
-            } else if (game.p2Score > game.p1Score){
-                Log.d(TAG, "player 2 wins!");
-            } else {
-                Log.d(TAG, "a tie!");
-            }
-            disableGamePlayButtons();
-            game.isGameOver = true;
-        }
-
-        switchPlayerTurn();
-    }
-
     public void startNewGame() {
         game.resetGame();
         displayScores();
         displayPointTotal(0);
         turnTextView.setText(p1TurnText);
         enableAllGamePlayButtons();
+        p1WinTextEdit.setVisibility(View.INVISIBLE);
+        p2WinTextEdit.setVisibility(View.INVISIBLE);
     }
-
-
 
 
     @Override
@@ -176,16 +184,21 @@ implements OnClickListener, OnEditorActionListener {
         player1ScoreLabel = (TextView)findViewById(R.id.player1ScoreLabel);
         player2ScoreLabel = (TextView)findViewById(R.id.player2ScoreLabel);
         pointScoreTextView = (TextView)findViewById(R.id.pointScoreTextView);
+        p1WinTextEdit = (TextView)findViewById(R.id.p1WinTextEdit);
+        p2WinTextEdit = (TextView)findViewById(R.id.p2WinTextEdit);
         dieImageView = (ImageView)findViewById(R.id.dieImageView);
         rollButton = (Button)findViewById(R.id.rollButton);
         endTurnButton = (Button)findViewById(R.id.endTurnButton);
         newGameButton = (Button)findViewById(R.id.newGameButton);
+
 
         game = new PigGame();
         turnTextView.setText(p1TurnText);
         rollButton.setFocusable(false);
         endTurnButton.setFocusable(false);
         newGameButton.setFocusable(false);
+        p1WinTextEdit.setVisibility(View.INVISIBLE);
+        p2WinTextEdit.setVisibility(View.INVISIBLE);
 
         displayScores();
 
@@ -209,13 +222,15 @@ implements OnClickListener, OnEditorActionListener {
                 // Roll the die
                 Log.d(TAG, "roll button pressed");
 
-                playerRoll();
+                if ((game.isP1Turn && game.p1CanPlay) ||(!game.isP1Turn && game.p2CanPlay)) {
+                    playerRoll();
+                }
+
                 break;
 
             case R.id.endTurnButton:
                 // end the turn and switch to the other player
                 Log.d(TAG, "endTurn button pressed");
-
                 endPlayerTurn();
                 break;
 
