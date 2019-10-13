@@ -44,6 +44,7 @@
         android:layout_marginEnd="33dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
+        android:hint="@string/emptyString"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:labelFor="@id/player1EditText"
@@ -51,7 +52,8 @@
         app:layout_constraintEnd_toStartOf="@+id/player2EditText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/player1TextView"
-        tools:text="@string/player1Name" />
+        tools:text=""
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/player1ScoreTextView"
@@ -75,6 +77,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
+        android:hint="@string/emptyString"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:labelFor="@id/player2EditText"
@@ -82,7 +85,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/player1EditText"
         app:layout_constraintTop_toBottomOf="@+id/player2TextView"
-        tools:text="@string/player2Name" />
+        tools:text=""
+        tools:ignore="LabelFor" />
 
     <TextView
         android:id="@+id/player2ScoreTextView"

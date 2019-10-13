@@ -13,6 +13,7 @@ public class PigGame {
     public boolean p1CanPlay = true;
     public boolean p2CanPlay = true;
 
+
     public int rollRandDie() {
         // Rolling die for value between 1 and 6
         int roll = rand.nextInt(6) + 1;
@@ -27,7 +28,7 @@ public class PigGame {
     public void resetGame() {
         p1Score = 0;
         p2Score = 0;
-        pointTotal = 0;
+        setPointTotal(0);
         isP1Turn = true;
 
         p1CanPlay = true;
@@ -35,5 +36,11 @@ public class PigGame {
     }
 
 
+    public int getPointTotal() {
+        return pointTotal;
+    }
 
+    public void setPointTotal(int pointTotal) {
+        this.pointTotal = pointTotal;
+    }
 }

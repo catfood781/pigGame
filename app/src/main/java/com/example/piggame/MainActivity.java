@@ -15,7 +15,6 @@ import android.view.KeyEvent;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.View.OnClickListener;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 import java.util.Locale;
@@ -102,30 +101,30 @@ implements OnClickListener, OnEditorActionListener {
         displayDie(dieRoll);
         // If not 1, continue adding to accumulator
         if (dieRoll != 1) {
-            game.pointTotal += dieRoll;
+            game.setPointTotal(game.getPointTotal() + dieRoll);
         } else {
         // Lose accumulated points for this turn and disable button
-            game.pointTotal = 0;
+            game.setPointTotal(0);
             rollButton.setEnabled(false);
         }
-        displayPointTotal(game.pointTotal);
+        displayPointTotal(game.getPointTotal());
     }
 
     public void endPlayerTurn() {
         // Check to see if there are points to add for p1 or p2
-        if (game.pointTotal != 0 && game.isP1Turn) {
-            game.p1Score += game.pointTotal;
+        if (game.getPointTotal() != 0 && game.isP1Turn) {
+            game.p1Score += game.getPointTotal();
             player1ScoreLabel.setText(String.valueOf(game.p1Score));
             game.p1CanPlay = false;
             game.p2CanPlay = true;
-        } else if (game.pointTotal != 0 && !game.isP1Turn) {
-            game.p2Score += game.pointTotal;
+        } else if (game.getPointTotal() != 0 && !game.isP1Turn) {
+            game.p2Score += game.getPointTotal();
             player2ScoreLabel.setText((String.valueOf(game.p2Score)));
             game.p1CanPlay = true;
             game.p2CanPlay = false;
         }
         // Resets counter for other player.
-        game.pointTotal = 0;
+        game.setPointTotal(0);
         checkForWinner();
 
     }
@@ -204,24 +203,28 @@ implements OnClickListener, OnEditorActionListener {
         p1WinTextEdit.setVisibility(View.INVISIBLE);
         p2WinTextEdit.setVisibility(View.INVISIBLE);
 
+        if (savedInstanceState != null) {
+            game.p1Score = savedInstanceState.getInt("p1Score", 0);
+            game.p2Score = savedInstanceState.getInt("p2Score", 0);
+            player1EditText.setText(savedInstanceState.getString(p1Name, ""));
+            player2EditText.setText(savedInstanceState.getString(p2Name, ""));
+            game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
+            game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
+        }
 
-
-//        if (savedInstanceState != null) {
-//            game.p1Score = savedInstanceState.getInt("p1Score", 0);
-//            game.p2Score = savedInstanceState.getInt("p2Score", 0);
-//            player1EditText.setText(savedInstanceState.getString(p1Name, ""));
-//            player2EditText.setText(savedInstanceState.getString(p2Name, ""));
-//        }
         displayScores();
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        outState.putInt("p1Score", 0);
-//        outState.putInt("p2Score", 0);
-//        outState.putString("p1Name", player1EditText.getText().toString());
-//        outState.putString("p2Name", player2EditText.getText().toString());
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("p1Score", game.p1Score);
+        outState.putInt("p2Score", game.p2Score);
+        outState.putString("p1Name", player1EditText.getText().toString());
+        outState.putString("p2Name", player2EditText.getText().toString());
+        outState.putInt("pointTotal", game.pointTotal);
+        outState.putBoolean("isP1Turn", game.isP1Turn);
+        super.onSaveInstanceState(outState);
+    }
 
 
     @Override
@@ -259,27 +262,6 @@ implements OnClickListener, OnEditorActionListener {
                 break;
         }
     }
-
-//    @Override
-//    public void onPause() {
-//        Editor editor = savedValues.edit();
-//        editor.putString("p1Name", player1EditText.getText().toString());
-//        editor.putString("p2Name", player2EditText.getText().toString());
-//        editor.putInt("p1Score", game.p1Score);
-//        editor.putInt("p2Score", game.p2Score);
-//        editor.apply();
-//        super.onPause();
-//    }
-//
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        player1EditText.setText(savedValues.getString("p1Name", ""));
-//        player2EditText.setText(savedValues.getString("p2Name", ""));
-//        player1ScoreLabel.setText(savedValues.getInt("p1Score", 0));
-//        player2ScoreLabel.setText(savedValues.getInt("p2Score", 0));
-//        displayScores();
-//    }
 
 
 }
