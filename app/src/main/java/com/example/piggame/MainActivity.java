@@ -33,15 +33,16 @@ implements OnClickListener, OnEditorActionListener {
     private TextView p1WinTextEdit; // Called it TextEdit instead of TextView :(
     private TextView p2WinTextEdit;
     private String p1TurnText = "Player 1's turn";
+    private String p1Name;
+    private String p2Name;
     private String p2TurnText = "Player 2's turn";
     private String turnText = "'s turn";
     private ImageView dieImageView;
     private Button rollButton;
     private Button endTurnButton;
     private Button newGameButton;
-    private static int GOAL = 100;
-    private String p1Name;
-    private String p2Name;
+    private static int GOAL = 20;
+
 
     // The game
     PigGame game;
@@ -115,31 +116,36 @@ implements OnClickListener, OnEditorActionListener {
         if (game.getPointTotal() != 0 && game.isP1Turn) {
             game.p1Score += game.getPointTotal();
             player1ScoreLabel.setText(String.valueOf(game.p1Score));
-            game.p1CanPlay = false;
-            game.p2CanPlay = true;
         } else if (game.getPointTotal() != 0 && !game.isP1Turn) {
             game.p2Score += game.getPointTotal();
             player2ScoreLabel.setText((String.valueOf(game.p2Score)));
-            game.p1CanPlay = true;
-            game.p2CanPlay = false;
         }
         // Resets counter for other player.
         game.setPointTotal(0);
+        displayPointTotal(game.pointTotal);
         checkForWinner();
-
+        switchPlayerTurn();
     }
 
     public void checkForWinner() {
         boolean winnerFound = false;
+
         if (game.p1Score >= GOAL){
+            if (!game.p1CanPlay) {
+                winnerFound = true;
+            }
             game.p1CanPlay = false;
-            winnerFound = true;
-        } else if (game.p2Score >= GOAL) {
+
+        }
+        if (game.p2Score >= GOAL) {
+            if (!game.p2CanPlay) {
+                winnerFound = true;
+            }
             game.p2CanPlay = false;
-            winnerFound = true;
+
         }
 
-        if (winnerFound && (!game.p1CanPlay || !game.p2CanPlay)) {
+        if (winnerFound) {
             if (game.p1Score > game.p2Score) {
                 Log.d(TAG, "player 1 wins!");
                 p1WinTextEdit.setVisibility(View.VISIBLE);
@@ -153,7 +159,7 @@ implements OnClickListener, OnEditorActionListener {
 
         }
 
-        switchPlayerTurn();
+
     }
 
     public void enableAllGamePlayButtons() {
@@ -206,8 +212,8 @@ implements OnClickListener, OnEditorActionListener {
         if (savedInstanceState != null) {
             game.p1Score = savedInstanceState.getInt("p1Score", 0);
             game.p2Score = savedInstanceState.getInt("p2Score", 0);
-            player1EditText.setText(savedInstanceState.getString(p1Name, ""));
-            player2EditText.setText(savedInstanceState.getString(p2Name, ""));
+            player1EditText.setText(savedInstanceState.getString("p1Name", ""));
+            player2EditText.setText(savedInstanceState.getString("p2Name", ""));
             game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
             game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
         }
