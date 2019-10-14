@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.view.KeyEvent;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.View.OnClickListener;
+
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -33,19 +34,17 @@ implements OnClickListener, OnEditorActionListener {
     private TextView p1WinTextEdit; // Called it TextEdit instead of TextView :(
     private TextView p2WinTextEdit;
     private String p1TurnText = "Player 1's turn";
-    private String p1Name;
-    private String p2Name;
     private String p2TurnText = "Player 2's turn";
     private String turnText = "'s turn";
     private ImageView dieImageView;
     private Button rollButton;
     private Button endTurnButton;
     private Button newGameButton;
-    private static int GOAL = 20;
+    private static int GOAL = 100;
 
 
     // The game
-    PigGame game;
+    private PigGame game;
 
 
     // Define SharedPreferences object
@@ -187,6 +186,7 @@ implements OnClickListener, OnEditorActionListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         player1EditText = (EditText)findViewById(R.id.player1EditText);
         player2EditText = (EditText)findViewById(R.id.player2EditText);
         turnTextView = (TextView)findViewById(R.id.turnTextView);
@@ -200,8 +200,11 @@ implements OnClickListener, OnEditorActionListener {
         endTurnButton = (Button)findViewById(R.id.endTurnButton);
         newGameButton = (Button)findViewById(R.id.newGameButton);
 
-
         game = new PigGame();
+        rollButton.setOnClickListener(this);
+        endTurnButton.setOnClickListener(this);
+        newGameButton.setOnClickListener(this);
+
         turnTextView.setText(p1TurnText);
         rollButton.setFocusable(false);
         endTurnButton.setFocusable(false);
