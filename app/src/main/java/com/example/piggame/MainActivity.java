@@ -15,7 +15,7 @@ import android.view.KeyEvent;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.View.OnClickListener;
 
-import android.content.SharedPreferences;
+//import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.Locale;
@@ -48,7 +48,7 @@ implements OnClickListener, OnEditorActionListener {
 
 
     // Define SharedPreferences object
-    private SharedPreferences savedValues;
+//    private SharedPreferences savedValues;
     // For logging and debugging
     private static final String TAG = "MainActivity";
 
@@ -235,6 +235,18 @@ implements OnClickListener, OnEditorActionListener {
         super.onSaveInstanceState(outState);
     }
 
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            game.p1Score = savedInstanceState.getInt("p1Score", 0);
+            game.p2Score = savedInstanceState.getInt("p2Score", 0);
+            player1EditText.setText(savedInstanceState.getString("p1Name", ""));
+            player2EditText.setText(savedInstanceState.getString("p2Name", ""));
+            game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
+            game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
+        }
+    }
 
     @Override
     public boolean onEditorAction(TextView v, int actionID, KeyEvent event) {
