@@ -1,6 +1,5 @@
 package com.example.piggame;
 
-//import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,10 +14,12 @@ import android.view.KeyEvent;
 import android.widget.TextView.OnEditorActionListener;
 import android.view.View.OnClickListener;
 
-//import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Locale;
+
+
 
 
 public class MainActivity extends Activity
@@ -110,6 +111,29 @@ implements OnClickListener, OnEditorActionListener {
         displayPointTotal(game.getPointTotal());
     }
 
+    private boolean checkForPlayerName() {
+        if (player1EditText.getText().toString().equals("") || player2EditText.getText().toString().equals("")) {
+            if (player1EditText.getText().toString().equals("")) {
+                player1EditText.setFocusable(true);
+                Toast.makeText(this, "Please enter a name.", Toast.LENGTH_LONG).show();
+                return false;
+            } else {
+                player1EditText.setFocusable(false);
+            }
+            if (player2EditText.getText().toString().equals("")) {
+                player2EditText.setFocusable(true);
+                Toast.makeText(this, "Please enter a name.", Toast.LENGTH_LONG).show();
+                return false;
+            } else {
+                player2EditText.setFocusable(false);
+            }
+        }
+        p1TurnText = player1EditText.getText().toString() + turnText;
+        p2TurnText = player2EditText.getText().toString() + turnText;
+        turnTextView.setText(game.isP1Turn ? p1TurnText : p2TurnText);
+        return true;
+    }
+
     public void endPlayerTurn() {
         // Check to see if there are points to add for p1 or p2
         if (game.getPointTotal() != 0 && game.isP1Turn) {
@@ -179,6 +203,10 @@ implements OnClickListener, OnEditorActionListener {
         enableAllGamePlayButtons();
         p1WinTextEdit.setVisibility(View.INVISIBLE);
         p2WinTextEdit.setVisibility(View.INVISIBLE);
+        player1EditText.setText("");
+        player2EditText.setText("");
+        turnTextView.setText("Player 1's turn");
+        player1EditText.setFocusable(true);
     }
 
 
@@ -219,6 +247,7 @@ implements OnClickListener, OnEditorActionListener {
             player2EditText.setText(savedInstanceState.getString("p2Name", ""));
             game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
             game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
+            turnTextView.setText(savedInstanceState.getString("turnTextView", "Player 1's turn"));
         }
 
         displayScores();
@@ -232,6 +261,7 @@ implements OnClickListener, OnEditorActionListener {
         outState.putString("p2Name", player2EditText.getText().toString());
         outState.putInt("pointTotal", game.pointTotal);
         outState.putBoolean("isP1Turn", game.isP1Turn);
+        outState.putString("turnTextView", turnTextView.getText().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -245,6 +275,7 @@ implements OnClickListener, OnEditorActionListener {
             player2EditText.setText(savedInstanceState.getString("p2Name", ""));
             game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
             game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
+            turnTextView.setText(savedInstanceState.getString("turnTextView", "Player 1's turn"));
         }
     }
 
@@ -265,7 +296,10 @@ implements OnClickListener, OnEditorActionListener {
                 // Roll the die
                 Log.d(TAG, "roll button pressed");
 
-                playerRoll();
+                if (checkForPlayerName()) {
+
+                    playerRoll();
+                }
 
                 break;
 
