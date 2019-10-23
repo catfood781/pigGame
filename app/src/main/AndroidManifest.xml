@@ -17,9 +17,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.piggame.PreferencesActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTask" />
+            android:name=".PreferencesActivity"
+            android:label="Preferences" >
+        </activity>
     </application>
 
 </manifest>
