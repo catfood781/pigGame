@@ -247,9 +247,9 @@ implements OnClickListener, OnEditorActionListener {
         switch (item.getItemId()) {
             case R.id.menu_settings:
                 Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
-//                startActivity(new Intent(
-//                        getApplicationContext(), PreferencesActivity.class
-//                ));
+                startActivity(new Intent(
+                        getApplicationContext(), PreferencesActivity.class
+                ));
                 return true;
 
             case R.id.menu_about:
