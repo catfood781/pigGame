@@ -15,7 +15,7 @@
         android:title="Set number of computer rolls" />
     <ListPreference
         android:id="@+id/pref_computer_max_score"
-        android:dialogTitle="Default Tip Percent"
+        android:dialogTitle="Computer's target score limiter"
         android:entries="@array/computer_max_score_keys"
         android:entryValues="@array/computer_max_score_values"
         android:key="pref_computer_max_score"
