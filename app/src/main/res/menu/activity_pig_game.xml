@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<menu xmlns:android="http://schemas.android.com/apk/res/android">-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.piggame"
+    xmlns:compat="http://schemas.android.com/apk/res-auto" >
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        android:icon="@drawable/die1"
+        compat:showAsAction="never" />
+    <item android:id="@+id/menu_about"
+        android:title="@string/menu_about"
+        android:icon="@drawable/die6"
+        compat:showAsAction="never"  />
+</menu>
+
+
+
+

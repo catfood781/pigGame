@@ -2,7 +2,11 @@ package com.example.piggame;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 //import android.view.inputmethod.EditorInfo;
 import android.view.View;
@@ -17,12 +21,14 @@ import android.view.View.OnClickListener;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Locale;
 
 
 
 
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
 implements OnClickListener, OnEditorActionListener {
 
     // Class variables
@@ -49,7 +55,10 @@ implements OnClickListener, OnEditorActionListener {
 
 
     // Define SharedPreferences object
-//    private SharedPreferences savedValues;
+    private SharedPreferences prefs;
+    private boolean pref_enable_ai = false;
+    private int pref_computer_roll = 3;
+
     // For logging and debugging
     private static final String TAG = "MainActivity";
 
@@ -207,6 +216,31 @@ implements OnClickListener, OnEditorActionListener {
         player2EditText.setText("");
         turnTextView.setText("Player 1's turn");
         player1EditText.setFocusable(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_pig_game, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+//                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(
+                        getApplicationContext(), PreferencesActivity.class
+                ));
+                return true;
+
+            case R.id.menu_about:
+                Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
