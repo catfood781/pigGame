@@ -1,6 +1,5 @@
 package com.example.piggame;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,8 +23,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
-
-
+import java.util.prefs.Preferences;
 
 
 public class MainActivity extends AppCompatActivity
@@ -58,6 +56,7 @@ implements OnClickListener, OnEditorActionListener {
     private SharedPreferences prefs;
     private boolean pref_enable_ai = false;
     private int pref_computer_roll = 3;
+    private int pref_computer_max_score = 15;
 
     // For logging and debugging
     private static final String TAG = "MainActivity";
@@ -120,7 +119,17 @@ implements OnClickListener, OnEditorActionListener {
         displayPointTotal(game.getPointTotal());
     }
 
+    public void computerRoll() {
+        for (int i = 0; i < game.numberOfRollsAllowed && game.getPointTotal() < game.numberOfScoreLimit; i++) {
+            playerRoll();
+        }
+        endPlayerTurn();
+    }
+
     private boolean checkForPlayerName() {
+        if (pref_enable_ai) {
+            player2EditText.setText("Computer");
+        }
         if (player1EditText.getText().toString().equals("") || player2EditText.getText().toString().equals("")) {
             if (player1EditText.getText().toString().equals("")) {
                 player1EditText.setFocusable(true);
@@ -157,6 +166,9 @@ implements OnClickListener, OnEditorActionListener {
         displayPointTotal(game.pointTotal);
         checkForWinner();
         switchPlayerTurn();
+        if (pref_enable_ai) {
+            computerRoll();
+        }
     }
 
     public void checkForWinner() {
@@ -218,9 +230,15 @@ implements OnClickListener, OnEditorActionListener {
         player1EditText.setFocusable(true);
     }
 
+
+
+    //------------------ Callback methods ----------------------//
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_pig_game, menu);
+        getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
 
@@ -228,7 +246,7 @@ implements OnClickListener, OnEditorActionListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_settings:
-//                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(
                         getApplicationContext(), PreferencesActivity.class
                 ));
@@ -248,6 +266,9 @@ implements OnClickListener, OnEditorActionListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // Deprecated, must investigate
+//        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+//        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         player1EditText = (EditText)findViewById(R.id.player1EditText);
         player2EditText = (EditText)findViewById(R.id.player2EditText);
@@ -262,7 +283,6 @@ implements OnClickListener, OnEditorActionListener {
         endTurnButton = (Button)findViewById(R.id.endTurnButton);
         newGameButton = (Button)findViewById(R.id.newGameButton);
 
-        game = new PigGame();
         rollButton.setOnClickListener(this);
         endTurnButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
@@ -282,7 +302,13 @@ implements OnClickListener, OnEditorActionListener {
             game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
             game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
             turnTextView.setText(savedInstanceState.getString("turnTextView", "Player 1's turn"));
+            pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
+            pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
+            pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
+            pointScoreTextView.setText(prefs.getString("pointsView", "0"));
         }
+
+        game = new PigGame(10, 50, false);
 
         displayScores();
     }
@@ -296,6 +322,10 @@ implements OnClickListener, OnEditorActionListener {
         outState.putInt("pointTotal", game.pointTotal);
         outState.putBoolean("isP1Turn", game.isP1Turn);
         outState.putString("turnTextView", turnTextView.getText().toString());
+        outState.putInt("pref_computer_max_score", pref_computer_max_score);
+        outState.putInt("pref_computer_roll", pref_computer_roll);
+        outState.putBoolean("pref_enable_ai", pref_enable_ai);
+        outState.putString("pointsView", pointScoreTextView.getText().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -310,8 +340,36 @@ implements OnClickListener, OnEditorActionListener {
             game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
             game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
             turnTextView.setText(savedInstanceState.getString("turnTextView", "Player 1's turn"));
+            pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
+            pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
+            pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
+            pointScoreTextView.setText(prefs.getString("pointsView", "0"));
         }
+
     }
+
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
+//        pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
+//        pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
+//
+//    }
+
+//    @Override
+//    public void onPause() {
+//        // save the instance variables
+////        prefs.unregisterOnSharedPreferenceChangeListener(this);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.putInt("pref_computer_max_score", pref_computer_max_score);
+//        editor.putInt("pref_computer_roll", pref_computer_roll);
+//        editor.putBoolean("pref_enable_ai", pref_enable_ai);
+//        editor.commit();
+//
+//        super.onPause();
+//    }
+
 
     @Override
     public boolean onEditorAction(TextView v, int actionID, KeyEvent event) {

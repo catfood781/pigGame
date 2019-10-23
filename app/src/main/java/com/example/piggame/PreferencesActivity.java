@@ -9,9 +9,7 @@ class PreferencesActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Display fragment as main content
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new PreferencesFragment())
-                .commit();
+        setContentView(R.layout.activity_main);
 
     }
 }
