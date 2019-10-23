@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +27,7 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 
 
+@SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity
 implements OnClickListener, OnEditorActionListener {
 
@@ -266,9 +268,9 @@ implements OnClickListener, OnEditorActionListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Deprecated, must investigate
-//        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-//        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         player1EditText = (EditText)findViewById(R.id.player1EditText);
         player2EditText = (EditText)findViewById(R.id.player2EditText);
