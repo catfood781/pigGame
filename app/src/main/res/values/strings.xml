@@ -19,8 +19,6 @@
     <string name="menu_about">About</string>
 
 
-    <string name="pref_enable_ai">false</string>
-
     <string-array name="computer_roll_keys">
         <item>3</item>
         <item>4</item>
@@ -31,7 +29,7 @@
         <item >4</item>
         <item >5</item>
     </string-array>
-    <string name="default_computer_roll">3</string>
+
 
 
     <string-array name="computer_max_score_keys">
@@ -44,6 +42,6 @@
         <item >15</item>
         <item >20</item>
     </string-array>
-    <string name="computer_max_score">15</string>
+
 
 </resources>

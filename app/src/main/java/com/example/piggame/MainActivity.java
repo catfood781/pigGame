@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
-//import android.view.inputmethod.EditorInfo;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,7 +23,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Locale;
-import java.util.prefs.Preferences;
+
 
 
 @SuppressWarnings("deprecation")
@@ -98,36 +97,6 @@ implements OnClickListener, OnEditorActionListener {
         pointScoreTextView.setText(String.valueOf(total));
     }
 
-    public void switchPlayerTurn() {
-        // Switches player's turn, player turn text and re-enables roll button
-        game.isP1Turn = !game.isP1Turn;
-        turnTextView.setText(game.isP1Turn ? p1TurnText : p2TurnText);
-        rollButton.setEnabled(true);
-    }
-
-    public void playerRoll() {
-        // Random roll
-        int dieRoll = game.rollRandDie();
-        // Show die value
-        displayDie(dieRoll);
-        // If not 1, continue adding to accumulator
-        if (dieRoll != 1) {
-            game.setPointTotal(game.getPointTotal() + dieRoll);
-        } else {
-        // Lose accumulated points for this turn and disable button
-            game.setPointTotal(0);
-            rollButton.setEnabled(false);
-        }
-        displayPointTotal(game.getPointTotal());
-    }
-
-    public void computerRoll() {
-        for (int i = 0; i < game.numberOfRollsAllowed && game.getPointTotal() < game.numberOfScoreLimit; i++) {
-            playerRoll();
-        }
-        endPlayerTurn();
-    }
-
     private boolean checkForPlayerName() {
         if (pref_enable_ai) {
             player2EditText.setText("Computer");
@@ -154,6 +123,22 @@ implements OnClickListener, OnEditorActionListener {
         return true;
     }
 
+    public void playerRoll() {
+        // Random roll
+        int dieRoll = game.rollRandDie();
+        // Show die value
+        displayDie(dieRoll);
+        // If not 1, continue adding to accumulator
+        if (dieRoll != 1) {
+            game.setPointTotal(game.getPointTotal() + dieRoll);
+        } else {
+        // Lose accumulated points for this turn and disable button
+            game.setPointTotal(0);
+            rollButton.setEnabled(false);
+        }
+        displayPointTotal(game.getPointTotal());
+    }
+
     public void endPlayerTurn() {
         // Check to see if there are points to add for p1 or p2
         if (game.getPointTotal() != 0 && game.isP1Turn) {
@@ -168,9 +153,32 @@ implements OnClickListener, OnEditorActionListener {
         displayPointTotal(game.pointTotal);
         checkForWinner();
         switchPlayerTurn();
-        if (pref_enable_ai) {
+        if (pref_enable_ai && !game.isP1Turn) {
             computerRoll();
         }
+    }
+
+    public void switchPlayerTurn() {
+        // Switches player's turn, player turn text and re-enables roll button
+        game.isP1Turn = !game.isP1Turn;
+        turnTextView.setText(game.isP1Turn ? p1TurnText : p2TurnText);
+        rollButton.setEnabled(true);
+    }
+
+    public void computerRoll() {
+        for (int i = 0; i < game.numberOfRollsAllowed || game.getPointTotal() < game.numberOfScoreLimit; i++) {
+            int dieRoll = game.rollRandDie();
+            if (dieRoll != 1) {
+                game.setPointTotal(game.getPointTotal() + dieRoll);
+            } else {
+                game.setPointTotal(0);
+                break;
+            }
+            Log.d(TAG, "computerScore: " + game.getPlayer2Score());
+            Log.d(TAG, "i: " + i);
+        }
+        displayPointTotal(game.getPointTotal());
+        endPlayerTurn();
     }
 
     public void checkForWinner() {
@@ -230,6 +238,7 @@ implements OnClickListener, OnEditorActionListener {
         player2EditText.setText("");
         turnTextView.setText("Player 1's turn");
         player1EditText.setFocusable(true);
+
     }
 
 
@@ -263,7 +272,6 @@ implements OnClickListener, OnEditorActionListener {
 
         }
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,7 +319,7 @@ implements OnClickListener, OnEditorActionListener {
             pointScoreTextView.setText(prefs.getString("pointsView", "0"));
         }
 
-        game = new PigGame(10, 50, false);
+        game = new PigGame();
 
         displayScores();
     }
@@ -332,7 +340,6 @@ implements OnClickListener, OnEditorActionListener {
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
@@ -351,28 +358,35 @@ implements OnClickListener, OnEditorActionListener {
 
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
-//        pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
-//        pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
-//
-//    }
+    @Override
+    public void onResume() {
+        super.onResume();
 
-//    @Override
-//    public void onPause() {
-//        // save the instance variables
-////        prefs.unregisterOnSharedPreferenceChangeListener(this);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.putInt("pref_computer_max_score", pref_computer_max_score);
-//        editor.putInt("pref_computer_roll", pref_computer_roll);
-//        editor.putBoolean("pref_enable_ai", pref_enable_ai);
-//        editor.commit();
-//
-//        super.onPause();
-//    }
+        pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
+        // This is gross
+        pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
+        pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
 
+        if (pref_enable_ai) {
+            game.numberOfScoreLimit = pref_computer_max_score;
+            game.numberOfRollsAllowed = pref_computer_roll;
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        // save the instance variables
+//        prefs.unregisterOnSharedPreferenceChangeListener(this);
+        SharedPreferences.Editor editor = prefs.edit();
+        // Put int in, parse String to Int out
+        editor.putInt("pref_computer_max_score", pref_computer_max_score);
+        editor.putInt("pref_computer_roll", pref_computer_roll);
+        editor.putBoolean("pref_enable_ai", pref_enable_ai);
+        editor.commit();
+
+        super.onPause();
+    }
 
     @Override
     public boolean onEditorAction(TextView v, int actionID, KeyEvent event) {
@@ -383,7 +397,6 @@ implements OnClickListener, OnEditorActionListener {
 
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -392,7 +405,6 @@ implements OnClickListener, OnEditorActionListener {
                 Log.d(TAG, "roll button pressed");
 
                 if (checkForPlayerName()) {
-
                     playerRoll();
                 }
 

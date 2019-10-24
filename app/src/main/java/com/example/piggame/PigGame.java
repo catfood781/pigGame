@@ -13,18 +13,12 @@ public class PigGame {
     public boolean p1CanPlay = true;
     public boolean p2CanPlay = true;
 
-    public int numberOfRollsAllowed = 10;
-    public int numRoll = 0;
-    public int numberOfScoreLimit = 50;
-    public int numScoreLimit = 0;
-    public boolean enabledAI = false;
+    public int numberOfRollsAllowed = 100;
+
+    public int numberOfScoreLimit = 100;
 
 
-    public PigGame(int numRolls, int numScore, boolean enabled) {
-        numberOfRollsAllowed = numRolls;
-        numberOfScoreLimit = numScore;
-        enabledAI = enabled;
-    }
+
 
     public int rollRandDie() {
         // Rolling die for value between 1 and 6
@@ -45,6 +39,7 @@ public class PigGame {
 
         p1CanPlay = true;
         p2CanPlay = true;
+
     }
 
 
@@ -55,5 +50,7 @@ public class PigGame {
     public void setPointTotal(int pointTotal) {
         this.pointTotal = pointTotal;
     }
+
+
 
 }
