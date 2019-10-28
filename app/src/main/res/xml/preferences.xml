@@ -2,30 +2,23 @@
 <!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
-        android:id="@+id/pref_enable_ai"
-
-        android:defaultValue="false"
+        android:defaultValue="@bool/pref_enable_ai"
+        android:key="pref_enable_ai"
         android:summary="Play against the computer"
         android:title="Enable AI?" />
     <ListPreference
-        android:id="@+id/pref_computer_roll"
+        android:dependency="pref_enable_ai"
         android:dialogTitle="Set number of computer rolls"
         android:entries="@array/computer_roll_keys"
         android:entryValues="@array/computer_roll_values"
-
         android:title="Set number of computer rolls" />
     <ListPreference
-        android:id="@+id/pref_computer_max_score"
+        android:dependency="pref_enable_ai"
         android:dialogTitle="Computer's target score limiter"
         android:entries="@array/computer_max_score_keys"
         android:entryValues="@array/computer_max_score_values"
-
         android:summary="Sets the number of points a computer will try to earn before ending turn."
         android:title="Computer Max Score" />
 </PreferenceScreen>
 
 
-
-    <!--        android:key="pref_enable_ai"-->
-    <!--        android:key="pref_computer_roll"-->
-    <!--        android:key="pref_computer_max_score"-->

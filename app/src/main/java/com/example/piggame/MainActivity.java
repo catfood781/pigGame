@@ -3,8 +3,11 @@ package com.example.piggame;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -28,7 +31,7 @@ import java.util.Locale;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends AppCompatActivity
-implements OnClickListener, OnEditorActionListener {
+implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeListener {
 
     // Class variables
     private EditText player1EditText;
@@ -41,7 +44,6 @@ implements OnClickListener, OnEditorActionListener {
     private TextView p2WinTextEdit;
     private String p1TurnText = "Player 1's turn";
     private String p2TurnText = "Player 2's turn";
-    private String turnText = "'s turn";
     private ImageView dieImageView;
     private Button rollButton;
     private Button endTurnButton;
@@ -55,9 +57,10 @@ implements OnClickListener, OnEditorActionListener {
 
     // Define SharedPreferences object
     private SharedPreferences prefs;
-    private boolean pref_enable_ai = false;
-    private int pref_computer_roll = 3;
-    private int pref_computer_max_score = 15;
+    private SharedPreferences savedValues;
+    private boolean enableAI = false;
+    private int pref_computer_roll;
+    private int pref_computer_max_score;
 
     // For logging and debugging
     private static final String TAG = "MainActivity";
@@ -98,9 +101,7 @@ implements OnClickListener, OnEditorActionListener {
     }
 
     private boolean checkForPlayerName() {
-        if (pref_enable_ai) {
-            player2EditText.setText("Computer");
-        }
+
         if (player1EditText.getText().toString().equals("") || player2EditText.getText().toString().equals("")) {
             if (player1EditText.getText().toString().equals("")) {
                 player1EditText.setFocusable(true);
@@ -117,6 +118,10 @@ implements OnClickListener, OnEditorActionListener {
                 player2EditText.setFocusable(false);
             }
         }
+        if (enableAI) {
+            player2EditText.setText("Computer");
+        }
+        String turnText = "'s turn";
         p1TurnText = player1EditText.getText().toString() + turnText;
         p2TurnText = player2EditText.getText().toString() + turnText;
         turnTextView.setText(game.isP1Turn ? p1TurnText : p2TurnText);
@@ -142,18 +147,18 @@ implements OnClickListener, OnEditorActionListener {
     public void endPlayerTurn() {
         // Check to see if there are points to add for p1 or p2
         if (game.getPointTotal() != 0 && game.isP1Turn) {
-            game.p1Score += game.getPointTotal();
-            player1ScoreLabel.setText(String.valueOf(game.p1Score));
+            game.setPlayer1Score(game.getPointTotal() + game.getPlayer1Score());
+            player1ScoreLabel.setText(String.valueOf(game.getPlayer1Score()));
         } else if (game.getPointTotal() != 0 && !game.isP1Turn) {
-            game.p2Score += game.getPointTotal();
-            player2ScoreLabel.setText((String.valueOf(game.p2Score)));
+            game.setPlayer2Score(game.getPointTotal() + game.getPlayer2Score());
+            player2ScoreLabel.setText(String.valueOf(game.getPlayer2Score()));
         }
         // Resets counter for other player.
         game.setPointTotal(0);
-        displayPointTotal(game.pointTotal);
+        displayPointTotal(game.getPointTotal());
         checkForWinner();
         switchPlayerTurn();
-        if (pref_enable_ai && !game.isP1Turn) {
+        if (enableAI && !game.isP1Turn) {
             computerRoll();
         }
     }
@@ -183,34 +188,31 @@ implements OnClickListener, OnEditorActionListener {
 
     public void checkForWinner() {
         boolean winnerFound = false;
-
-        if (game.p1Score >= GOAL){
+        if (game.getPlayer1Score() >= GOAL){
             if (!game.p1CanPlay) {
                 winnerFound = true;
             }
             game.p1CanPlay = false;
 
         }
-        if (game.p2Score >= GOAL) {
+        if (game.getPlayer2Score() >= GOAL) {
             if (!game.p2CanPlay) {
                 winnerFound = true;
             }
             game.p2CanPlay = false;
-
         }
 
         if (winnerFound) {
-            if (game.p1Score > game.p2Score) {
+            if (game.getPlayer1Score() > game.getPlayer2Score()) {
                 Log.d(TAG, "player 1 wins!");
                 p1WinTextEdit.setVisibility(View.VISIBLE);
-            } else if (game.p2Score > game.p1Score){
+            } else if (game.getPlayer2Score() > game.getPlayer1Score()){
                 Log.d(TAG, "player 2 wins!");
                 p2WinTextEdit.setVisibility(View.VISIBLE);
             } else {
                 Log.d(TAG, "a tie!");
             }
             disableGamePlayButtons();
-
         }
 
 
@@ -238,6 +240,7 @@ implements OnClickListener, OnEditorActionListener {
         player2EditText.setText("");
         turnTextView.setText("Player 1's turn");
         player1EditText.setFocusable(true);
+        player2EditText.setFocusable(true);
 
     }
 
@@ -278,9 +281,6 @@ implements OnClickListener, OnEditorActionListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
         player1EditText = (EditText)findViewById(R.id.player1EditText);
         player2EditText = (EditText)findViewById(R.id.player2EditText);
         turnTextView = (TextView)findViewById(R.id.turnTextView);
@@ -305,88 +305,91 @@ implements OnClickListener, OnEditorActionListener {
         p1WinTextEdit.setVisibility(View.INVISIBLE);
         p2WinTextEdit.setVisibility(View.INVISIBLE);
 
+        game = new PigGame();
+        displayScores();
+
         if (savedInstanceState != null) {
-            game.p1Score = savedInstanceState.getInt("p1Score", 0);
-            game.p2Score = savedInstanceState.getInt("p2Score", 0);
+            game.setPlayer1Score(savedInstanceState.getInt("p1Score", 0));
+            game.setPlayer2Score(savedInstanceState.getInt("p2Score", 0));
+            player1ScoreLabel.setText(String.valueOf(game.getPlayer1Score()));
+            player2ScoreLabel.setText(String.valueOf(game.getPlayer2Score()));
+
             player1EditText.setText(savedInstanceState.getString("p1Name", ""));
             player2EditText.setText(savedInstanceState.getString("p2Name", ""));
-            game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
-            game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
             turnTextView.setText(savedInstanceState.getString("turnTextView", "Player 1's turn"));
-            pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
-            pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
-            pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
-            pointScoreTextView.setText(prefs.getString("pointsView", "0"));
+            game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
+
+
+//            String pointScore = prefs.getString("pointScoreTextView", "0");
+//
+//            pointScoreTextView.setText(pointScore);
+//            game.setPointTotal(Integer.parseInt(pointScore));
+
         }
 
-        game = new PigGame();
 
-        displayScores();
+
+
+
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        savedValues = getSharedPreferences("savedValues", MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("p1Score", game.p1Score);
-        outState.putInt("p2Score", game.p2Score);
+        outState.putInt("p1Score", game.getPlayer1Score());
+        outState.putInt("p2Score", game.getPlayer2Score());
+
         outState.putString("p1Name", player1EditText.getText().toString());
         outState.putString("p2Name", player2EditText.getText().toString());
-        outState.putInt("pointTotal", game.pointTotal);
-        outState.putBoolean("isP1Turn", game.isP1Turn);
         outState.putString("turnTextView", turnTextView.getText().toString());
-        outState.putInt("pref_computer_max_score", pref_computer_max_score);
-        outState.putInt("pref_computer_roll", pref_computer_roll);
-        outState.putBoolean("pref_enable_ai", pref_enable_ai);
+        outState.putBoolean("isP1Turn", game.isP1Turn);
+
         outState.putString("pointsView", pointScoreTextView.getText().toString());
+        outState.putInt("pointTotal", game.getPointTotal());
+
+
         super.onSaveInstanceState(outState);
     }
+
+
+
+
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            game.p1Score = savedInstanceState.getInt("p1Score", 0);
-            game.p2Score = savedInstanceState.getInt("p2Score", 0);
+            game.setPlayer1Score(savedInstanceState.getInt("p1Score", 0));
+            game.setPlayer2Score(savedInstanceState.getInt("p2Score", 0));
+            player1ScoreLabel.setText(String.valueOf(game.getPlayer1Score()));
+            player2ScoreLabel.setText(String.valueOf(game.getPlayer2Score()));
+
             player1EditText.setText(savedInstanceState.getString("p1Name", ""));
             player2EditText.setText(savedInstanceState.getString("p2Name", ""));
-            game.pointTotal = savedInstanceState.getInt("pointTotal", 0);
-            game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
             turnTextView.setText(savedInstanceState.getString("turnTextView", "Player 1's turn"));
-            pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
-            pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
-            pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
+            game.isP1Turn = savedInstanceState.getBoolean("isP1Turn", true);
+
             pointScoreTextView.setText(prefs.getString("pointsView", "0"));
+            game.setPointTotal(savedInstanceState.getInt("pointTotal", 0));
+
         }
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        pref_enable_ai = prefs.getBoolean("pref_enable_ai", false);
-        // This is gross
-        pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
-        pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
-
-        if (pref_enable_ai) {
-            game.numberOfScoreLimit = pref_computer_max_score;
-            game.numberOfRollsAllowed = pref_computer_roll;
-        }
-
-    }
 
     @Override
     public void onPause() {
-        // save the instance variables
-//        prefs.unregisterOnSharedPreferenceChangeListener(this);
-        SharedPreferences.Editor editor = prefs.edit();
-        // Put int in, parse String to Int out
+        SharedPreferences.Editor editor = savedValues.edit();
+        editor.putBoolean("pref_enable_ai", enableAI);
         editor.putInt("pref_computer_max_score", pref_computer_max_score);
         editor.putInt("pref_computer_roll", pref_computer_roll);
-        editor.putBoolean("pref_enable_ai", pref_enable_ai);
         editor.commit();
 
         super.onPause();
     }
+
 
     @Override
     public boolean onEditorAction(TextView v, int actionID, KeyEvent event) {
@@ -403,11 +406,7 @@ implements OnClickListener, OnEditorActionListener {
             case R.id.rollButton:
                 // Roll the die
                 Log.d(TAG, "roll button pressed");
-
-                if (checkForPlayerName()) {
-                    playerRoll();
-                }
-
+                if (checkForPlayerName()) { playerRoll(); }
                 break;
 
             case R.id.endTurnButton:
@@ -419,11 +418,40 @@ implements OnClickListener, OnEditorActionListener {
             case R.id.newGameButton:
                 // start a new game
                 Log.d(TAG, "newGame button pressed");
-
                 startNewGame();
                 break;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        enableAI = prefs.getBoolean("pref_enable_ai", false);
+        pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
+        pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
+
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
+
+
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+        if (key.equals("pref_enable_ai")) {
+            enableAI = prefs.getBoolean(key, false);
+        }
+        if (key.equals("pref_computer_max_score")) {
+            pref_computer_max_score = prefs.getInt(key, 15);
+        }
+        if (key.equals("pref_computer_roll")) {
+            pref_computer_roll = prefs.getInt(key,3);
+        }
+
+    }
+
 
 
 }

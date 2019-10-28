@@ -5,33 +5,49 @@ import java.util.Random;
 
 public class PigGame {
     private Random rand = new Random();
-    public int p1Score = 0;
-    public int p2Score = 0;
-    public int pointTotal = 0;
-    public boolean isP1Turn = true;    // else it is player 2's turn
+    private int p1Score = 0;
+    private int p2Score = 0;
+    private int pointTotal = 0;
+    boolean isP1Turn = true;    // else it is player 2's turn
 
-    public boolean p1CanPlay = true;
-    public boolean p2CanPlay = true;
+    boolean p1CanPlay = true;
+    boolean p2CanPlay = true;
 
-    public int numberOfRollsAllowed = 100;
+    // TODO: convert to private
+    int numberOfRollsAllowed = 100;
 
-    public int numberOfScoreLimit = 100;
+    int numberOfScoreLimit = 100;
+
+    private String player1Name = "";
+    private String player2Name = "";
+
+    public String getPlayer1Name() { return player1Name; }
+    public void setPlayer1Name(String n) { player1Name = n; }
+    public String getPlayer2Name() { return player2Name; }
+
+    int getPlayer1Score() { return p1Score; }
+    void setPlayer1Score(int value) { this.p1Score = value; }
+    int getPlayer2Score() { return p2Score; }
+    void setPlayer2Score(int value) { this.p2Score = value;}
+
+    int getPointTotal() {
+        return pointTotal;
+    }
+    void setPointTotal(int pointTotal) {
+        this.pointTotal = pointTotal;
+    }
 
 
 
-
-    public int rollRandDie() {
+    int rollRandDie() {
         // Rolling die for value between 1 and 6
         int roll = rand.nextInt(6) + 1;
         Log.d("PigGame", "roll: " + roll);
         return roll;
     }
 
-    public int getPlayer1Score() { return p1Score; }
-    public int getPlayer2Score() { return p2Score; }
 
-
-    public void resetGame() {
+    void resetGame() {
         p1Score = 0;
         p2Score = 0;
         setPointTotal(0);
@@ -41,16 +57,5 @@ public class PigGame {
         p2CanPlay = true;
 
     }
-
-
-    public int getPointTotal() {
-        return pointTotal;
-    }
-
-    public void setPointTotal(int pointTotal) {
-        this.pointTotal = pointTotal;
-    }
-
-
 
 }
