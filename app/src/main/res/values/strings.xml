@@ -19,25 +19,22 @@
     <string name="menu_about">About</string>
 
 
-    <string-array name="computer_roll_keys">
-        <item>3</item>
+    <string-array name="computer_reset_keys">
+        <item>1</item>
         <item>4</item>
-        <item>5</item>
+        <item>8</item>
     </string-array>
-    <string-array name="computer_roll_values">
-        <item >3</item>
+    <string-array name="computer_reset_values">
+        <item >1</item>
         <item >4</item>
-        <item >5</item>
+        <item >8</item>
     </string-array>
-
-
-
-    <string-array name="computer_max_score_keys">
+    <string-array name="end_game_score_keys">
         <item>10</item>
         <item>15</item>
         <item>20</item>
     </string-array>
-    <string-array name="computer_max_score_values">
+    <string-array name="end_game_score_values">
         <item >10</item>
         <item >15</item>
         <item >20</item>

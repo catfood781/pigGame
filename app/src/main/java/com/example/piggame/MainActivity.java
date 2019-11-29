@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 
 import android.view.Menu;
@@ -45,6 +44,7 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
     private String p1TurnText = "Player 1's turn";
     private String p2TurnText = "Player 2's turn";
     private ImageView dieImageView;
+    private ImageView dieImage2View;
     private Button rollButton;
     private Button endTurnButton;
     private Button newGameButton;
@@ -57,10 +57,10 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
 
     // Define SharedPreferences object
     private SharedPreferences prefs;
-    private SharedPreferences savedValues;
-    private boolean enableAI = false;
-    private int pref_computer_roll;
-    private int pref_computer_max_score;
+
+    private boolean pref_enable_second_die = false;
+    private int computer_reset_keys;
+    private int end_game_score_keys;
 
     // For logging and debugging
     private static final String TAG = "MainActivity";
@@ -71,29 +71,44 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         player2ScoreLabel.setText(String.format(Locale.US, "%d", game.getPlayer2Score()));
     }
 
-    public void displayDie(int dieValue) {
+    public void displayDie(int dieValue, int imageView) {
         int id = 0;
         switch (dieValue) {
             case 1:
-                id = R.drawable.die1;
+                id = R.drawable.side1;
                 break;
             case 2:
-                id = R.drawable.die2;
+                id = R.drawable.side2;
                 break;
             case 3:
-                id = R.drawable.die3;
+                id = R.drawable.side3;
                 break;
             case 4:
-                id = R.drawable.die4;
+                id = R.drawable.side4;
                 break;
             case 5:
-                id = R.drawable.die5;
+                id = R.drawable.side5;
                 break;
             case 6:
-                id = R.drawable.die6;
+                id = R.drawable.side6;
+                break;
+            case 7:
+                id = R.drawable.side7;
+                break;
+            case 8:
+                id = R.drawable.side8;
                 break;
         }
-        dieImageView.setImageResource(id);
+        if (imageView == 1)
+        {
+            dieImageView.setImageResource(id);
+
+        }
+        else if (imageView == 2)
+        {
+            dieImage2View.setImageResource(id);
+        }
+
     }
 
     public void displayPointTotal(int total) {
@@ -118,8 +133,9 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
                 player2EditText.setFocusable(false);
             }
         }
-        if (enableAI) {
-            player2EditText.setText("Computer");
+        if (pref_enable_second_die) {
+            /*I found this on the internet so it must be true*/
+            dieImage2View.setVisibility(dieImageView.VISIBLE);
         }
         String turnText = "'s turn";
         p1TurnText = player1EditText.getText().toString() + turnText;
@@ -132,15 +148,30 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         // Random roll
         int dieRoll = game.rollRandDie();
         // Show die value
-        displayDie(dieRoll);
+        displayDie(dieRoll, 1);
+        int dieRoll2 = 0;
+        if (pref_enable_second_die) {
+            dieRoll2 = game.rollRandDie();
+            displayDie(dieRoll2, 2);
+        }
         // If not 1, continue adding to accumulator
-        if (dieRoll != 1) {
-            game.setPointTotal(game.getPointTotal() + dieRoll);
+        if (dieRoll != computer_reset_keys) {
+            if (pref_enable_second_die && dieRoll2 != 1) {
+                game.setPointTotal(game.getPointTotal() + dieRoll);
+                game.setPointTotal(game.getPointTotal() + dieRoll2);
+            } else if (pref_enable_second_die && dieRoll2 == computer_reset_keys){
+                game.setPointTotal(0);
+                rollButton.setEnabled(false);
+            } else {
+                game.setPointTotal(game.getPointTotal() + dieRoll);
+            }
+
         } else {
         // Lose accumulated points for this turn and disable button
             game.setPointTotal(0);
             rollButton.setEnabled(false);
         }
+
         displayPointTotal(game.getPointTotal());
     }
 
@@ -158,9 +189,6 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         displayPointTotal(game.getPointTotal());
         checkForWinner();
         switchPlayerTurn();
-        if (enableAI && !game.isP1Turn) {
-            computerRoll();
-        }
     }
 
     public void switchPlayerTurn() {
@@ -170,32 +198,16 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         rollButton.setEnabled(true);
     }
 
-    public void computerRoll() {
-        for (int i = 0; i < game.numberOfRollsAllowed || game.getPointTotal() < game.numberOfScoreLimit; i++) {
-            int dieRoll = game.rollRandDie();
-            if (dieRoll != 1) {
-                game.setPointTotal(game.getPointTotal() + dieRoll);
-            } else {
-                game.setPointTotal(0);
-                break;
-            }
-            Log.d(TAG, "computerScore: " + game.getPlayer2Score());
-            Log.d(TAG, "i: " + i);
-        }
-        displayPointTotal(game.getPointTotal());
-        endPlayerTurn();
-    }
-
     public void checkForWinner() {
         boolean winnerFound = false;
-        if (game.getPlayer1Score() >= GOAL){
+        if (game.getPlayer1Score() >= end_game_score_keys){
             if (!game.p1CanPlay) {
                 winnerFound = true;
             }
             game.p1CanPlay = false;
 
         }
-        if (game.getPlayer2Score() >= GOAL) {
+        if (game.getPlayer2Score() >= end_game_score_keys) {
             if (!game.p2CanPlay) {
                 winnerFound = true;
             }
@@ -290,6 +302,7 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         p1WinTextEdit = (TextView)findViewById(R.id.p1WinTextEdit);
         p2WinTextEdit = (TextView)findViewById(R.id.p2WinTextEdit);
         dieImageView = (ImageView)findViewById(R.id.dieImageView);
+        dieImage2View = (ImageView)findViewById(R.id.dieImage2View);
         rollButton = (Button)findViewById(R.id.rollButton);
         endTurnButton = (Button)findViewById(R.id.endTurnButton);
         newGameButton = (Button)findViewById(R.id.newGameButton);
@@ -305,6 +318,8 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         newGameButton.setFocusable(false);
         p1WinTextEdit.setVisibility(View.INVISIBLE);
         p2WinTextEdit.setVisibility(View.INVISIBLE);
+        dieImage2View.setVisibility(View.INVISIBLE);
+
 
         game = new PigGame();
         displayScores();
@@ -326,16 +341,16 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
 //            pointScoreTextView.setText(pointScore);
 //            game.setPointTotal(Integer.parseInt(pointScore));
 
+            computer_reset_keys = savedInstanceState.getInt("computer_reset_keys", 1);
+            end_game_score_keys = savedInstanceState.getInt("end_game_score_keys", 100);
         }
 
 
-
-
-
-
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-        savedValues = getSharedPreferences("savedValues", MODE_PRIVATE);
+        //savedValues = getSharedPreferences("savedValues", MODE_PRIVATE);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //computer_reset_keys = prefs.getInt("computer_reset_keys", 1);
+//        end_game_score = prefs.getInt("end_game_score_values", 100);
     }
 
     @Override
@@ -382,10 +397,12 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
 
     @Override
     public void onPause() {
-        SharedPreferences.Editor editor = savedValues.edit();
-        editor.putBoolean("pref_enable_ai", enableAI);
-        editor.putInt("pref_computer_max_score", pref_computer_max_score);
-        editor.putInt("pref_computer_roll", pref_computer_roll);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("pref_enable_second_die", pref_enable_second_die);
+        /*editor.putInt("pref_computer_max_score", pref_computer_max_score);
+        editor.putInt("pref_computer_roll", pref_computer_roll);*/
+        editor.putInt("computer_reset_keys", computer_reset_keys);
+        editor.putInt("end_game_score_keys", end_game_score_keys);
         editor.commit();
 
         super.onPause();
@@ -428,9 +445,9 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
     public void onResume() {
         super.onResume();
 
-        enableAI = prefs.getBoolean("pref_enable_ai", false);
-        pref_computer_max_score = prefs.getInt("pref_computer_max_score", 15);
-        pref_computer_roll = prefs.getInt("pref_computer_roll", 3);
+        pref_enable_second_die = prefs.getBoolean("pref_enable_second_die", false);
+        end_game_score_keys = prefs.getInt("end_game_score_keys", 15);
+        computer_reset_keys = prefs.getInt("computer_reset_keys", 1);
 
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
@@ -441,14 +458,22 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
 
-        if (key.equals("pref_enable_ai")) {
-            enableAI = prefs.getBoolean(key, false);
+        if (key.equals("pref_enable_second_die")) {
+            pref_enable_second_die = prefs.getBoolean(key, false);
+            if (pref_enable_second_die)
+            {
+                dieImage2View.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                dieImage2View.setVisibility(View.INVISIBLE);
+            }
         }
-        if (key.equals("pref_computer_max_score")) {
-            pref_computer_max_score = prefs.getInt(key, 15);
+        if (key.equals("end_game_score_keys")) {
+            end_game_score_keys = prefs.getInt(key, 15);
         }
-        if (key.equals("pref_computer_roll")) {
-            pref_computer_roll = prefs.getInt(key,3);
+        if (key.equals("computer_reset_keys")) {
+            computer_reset_keys = prefs.getInt(key,1);
         }
 
     }

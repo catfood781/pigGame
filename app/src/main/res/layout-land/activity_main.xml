@@ -127,7 +127,7 @@
         app:layout_constraintEnd_toStartOf="@+id/player2EditText"
         app:layout_constraintStart_toEndOf="@+id/player1EditText"
         app:layout_constraintTop_toBottomOf="@+id/turnTextView"
-        app:srcCompat="@drawable/die6" />
+        app:srcCompat="@drawable/side5" />
 
     <Button
         android:id="@+id/newGameButton"
