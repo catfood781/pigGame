@@ -294,6 +294,7 @@ implements OnClickListener, OnEditorActionListener, OnSharedPreferenceChangeList
         endTurnButton = (Button)findViewById(R.id.endTurnButton);
         newGameButton = (Button)findViewById(R.id.newGameButton);
 
+
         rollButton.setOnClickListener(this);
         endTurnButton.setOnClickListener(this);
         newGameButton.setOnClickListener(this);
